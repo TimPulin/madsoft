@@ -1,9 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { examReducer } from './slices/exam-slice';
 
 const store = configureStore({
-  reducer: {},
+  reducer: {
+    exam: examReducer,
+  },
 });
 
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
-export default store;
+export type RootStateType = ReturnType<typeof store.getState>;
+export type AppDispatchType = typeof store.dispatch;
+export { store };
