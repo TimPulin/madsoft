@@ -11,17 +11,17 @@ import Timer from '../../components/timer/Timer';
 
 import mainStyles from '../../styles/modules/main.module.scss';
 import pageStyles from './exam-page.module.scss';
-import { useExam, useExamProgress, useQuestionsAmount } from '../../store/selectors';
+import { useExam, useExamProgressIndex, useQuestionsAmount } from '../../store/selectors';
 
 export default function ExamPage() {
   const dispatch = useDispatch();
   const exam = useExam();
   const questionAmount = useQuestionsAmount();
-  const examProgress = useExamProgress();
+  const examProgress = useExamProgressIndex();
 
   const onSubmitAnswer = (value: boolean[]) => {
     dispatch(updateAnswerList(value));
-    dispatch(updateProgress(examProgress + 1));
+    if (examProgress < questionAmount - 1) dispatch(updateProgress(examProgress + 1));
   };
 
   async function getExamLocal() {
