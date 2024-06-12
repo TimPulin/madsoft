@@ -1,9 +1,8 @@
-import { useFormik } from 'formik';
-import { Button, Checkbox, Radio, Space } from 'antd';
+import { Formik, useFormik } from 'formik';
+import { Button, Checkbox, Radio, RadioChangeEvent, Space } from 'antd';
 import formStyles from '../../styles/modules/form.module.scss';
 
 import { QuestionType, QuestionMode } from '../../types/exam-type';
-import { useEffect } from 'react';
 
 type QuestionPropsType = {
   question: QuestionType;
@@ -11,11 +10,11 @@ type QuestionPropsType = {
 };
 
 type FormStateType = {
-  question: number | number[] | null | undefined;
+  question: number[] | undefined;
 };
 
 const formInitialState: FormStateType = {
-  question: null,
+  question: [],
 };
 
 export default function Question(props: QuestionPropsType) {
@@ -24,37 +23,39 @@ export default function Question(props: QuestionPropsType) {
   const formik = useFormik({
     initialValues: formInitialState,
     onSubmit: (values) => {
-      if (values.question !== null) {
-        if (typeof values.question === 'number') {
-          onSubmit([question.options[values.question].isCorrect]);
-        } else if (Array.isArray(values.question)) {
-          const valuesFormated = values.question.map((item) => {
-            return question.options[item].isCorrect;
-          });
-          onSubmit(valuesFormated);
-        }
-      }
+      onSubmitLocal(values);
     },
   });
 
-  const handleCheckboxChange = (value: number[]) => {
-    formik.setFieldValue('question', value);
+  function onSubmitLocal(values: FormStateType) {
+    if (values.question !== null) {
+      if (typeof values.question === 'number') {
+        onSubmit([question.options[values.question].isCorrect]);
+      } else if (Array.isArray(values.question)) {
+        const valuesFormated = values.question.map((item) => {
+          return question.options[item].isCorrect;
+        });
+        onSubmit(valuesFormated);
+      }
+    }
+    formik.resetForm();
+  }
+
+  const handleRadioChange = (event: RadioChangeEvent) => {
+    const target = event.target;
+    if (target !== null && target.name) formik.setFieldValue(target.name, target.value);
   };
 
-  useEffect(() => {
-    formik.resetForm();
-  }, [question]);
+  const handleCheckboxChange = (name: string, value: number[]) => {
+    formik.setFieldValue(name, value);
+  };
 
   return (
     <div>
       <form onSubmit={formik.handleSubmit} className={formStyles.form}>
         <legend className={formStyles.legend}>{question.title}</legend>
         {question.questionMode === QuestionMode.Radio && (
-          <Radio.Group
-            name="question"
-            onChange={formik.handleChange}
-            value={formik.values.question}
-          >
+          <Radio.Group name="question" onChange={handleRadioChange} value={formik.values.question}>
             <Space direction="vertical">
               {question.options.map((item, index) => (
                 <Radio key={item.text} value={index}>
@@ -68,8 +69,8 @@ export default function Question(props: QuestionPropsType) {
         {question.questionMode === QuestionMode.Checkbox && (
           <Checkbox.Group
             name="question"
-            onChange={handleCheckboxChange}
-            value={formik.values.question as number[] | undefined}
+            onChange={(event) => handleCheckboxChange('question', event)}
+            value={formik.values.question}
           >
             <Space direction="vertical">
               {question.options.map((item, index) => (
@@ -80,9 +81,7 @@ export default function Question(props: QuestionPropsType) {
             </Space>
           </Checkbox.Group>
         )}
-
-        {/* TODO блокировка кнопки в ожидании ответа */}
-        <Button htmlType="submit" className={formStyles.button}>
+        <Button disabled={!formik.dirty} htmlType="submit" className={formStyles.button}>
           Ответить
         </Button>
       </form>
