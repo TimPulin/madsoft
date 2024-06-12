@@ -3,21 +3,45 @@
   border-width: 2px;
 }
 
+// checkbox
+:where(.css-dev-only-do-not-override-3rel02).ant-checkbox .ant-checkbox-inner {
+  border-radius: 50%;
+  border-width: 2px;
+}
+
+// radio
+:where(.css-dev-only-do-not-override-3rel02).ant-checkbox .ant-checkbox-inner::after,
+:where(.css-dev-only-do-not-override-3rel02).ant-radio-wrapper .ant-radio-inner::after {
+  content: none;
+}
+
+// checkbox and radio checked
+.css-dev-only-do-not-override-3rel02.ant-checkbox-wrapper.ant-checkbox-wrapper-checked
+  .ant-checkbox-inner,
 :where(.css-dev-only-do-not-override-3rel02).ant-radio-wrapper .ant-radio-checked .ant-radio-inner {
   background-color: $color-primary;
   border-color: $color-primary;
 }
 
-:where(.css-dev-only-do-not-override-3rel02).ant-radio-wrapper .ant-radio-inner::after {
-  content: none;
-}
-
+// checkbox and radio  hover
+.css-dev-only-do-not-override-3rel02.ant-checkbox-wrapper:hover .ant-checkbox-inner,
 :where(.css-dev-only-do-not-override-3rel02).ant-radio-wrapper:hover .ant-radio-inner {
   border-color: $color-primary;
 }
 
-:where(.css-dev-only-do-not-override-3rel02).ant-btn-default:not(:disabled):not(.ant-btn-disabled):hover {
-  //   background-color: $color-primary;
+// checkbox checked hover
+:where(.css-dev-only-do-not-override-3rel02).ant-checkbox-wrapper:not(
+    .ant-checkbox-wrapper-disabled
+  ):hover
+  .ant-checkbox-checked:not(.ant-checkbox-disabled)
+  .ant-checkbox-inner {
+  background-color: $color-primary-light;
+}
+
+//  button
+:where(.css-dev-only-do-not-override-3rel02).ant-btn-default:not(:disabled):not(
+    .ant-btn-disabled
+  ):hover {
   color: $color-primary;
   border-color: $color-primary;
 }

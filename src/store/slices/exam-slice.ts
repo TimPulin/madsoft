@@ -48,7 +48,6 @@ const examSlice = createSlice({
       const tempAnswer = cloneDeep(state.value.answerList);
       tempAnswer.push(action.payload);
       state.value.answerList = tempAnswer;
-      console.log(state.value.answerList);
     },
   },
 });
