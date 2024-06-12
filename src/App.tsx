@@ -1,5 +1,7 @@
+import ExamPage from './pages/exam-page/ExamPage';
+
 function App() {
-  return <h1>TESt</h1>;
+  return <ExamPage />;
 }
 
 export default App;

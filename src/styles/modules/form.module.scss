@@ -1,0 +1,17 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  row-gap: $gap-basic;
+}
+
+.legend {
+  font-weight: 500;
+}
+
+.button {
+  align-self: flex-start;
+  padding-inline: 20px;
+  background-color: $color-primary;
+  color: #fff;
+  border-color: $color-primary;
+}
