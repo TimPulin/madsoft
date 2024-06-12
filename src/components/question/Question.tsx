@@ -3,13 +3,18 @@ import { Button, Radio, Space } from 'antd';
 import formStyles from '../../styles/modules/form.module.scss';
 
 import type { QuestionType } from '../../types/exam-type';
+import { useEffect } from 'react';
 
 type QuestionPropsType = {
   question: QuestionType;
   onSubmit: (value: boolean) => void;
 };
 
-const formInitialState = {
+type FormStateType = {
+  question: number | null;
+};
+
+const formInitialState: FormStateType = {
   question: null,
 };
 
@@ -19,18 +24,22 @@ export default function Question(props: QuestionPropsType) {
   const formik = useFormik({
     initialValues: formInitialState,
     onSubmit: (values) => {
-      if (values.question) onSubmit(values.question);
+      if (values.question !== null) onSubmit(question.options[values.question].isCorrect);
     },
   });
+
+  useEffect(() => {
+    formik.resetForm();
+  }, [question]);
 
   return (
     <div>
       <form onSubmit={formik.handleSubmit} className={formStyles.form}>
         <legend className={formStyles.legend}>{question.title}</legend>
-        <Radio.Group name="question" onChange={formik.handleChange}>
+        <Radio.Group name="question" onChange={formik.handleChange} value={formik.values.question}>
           <Space direction="vertical">
-            {question.options.map((item) => (
-              <Radio key={item.text} value={item.isCorrect}>
+            {question.options.map((item, index) => (
+              <Radio key={item.text} value={index}>
                 {item.text}
               </Radio>
             ))}
