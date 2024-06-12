@@ -19,7 +19,7 @@ export default function ExamPage() {
   const questionAmount = useQuestionsAmount();
   const examProgress = useExamProgress();
 
-  const onSubmitAnswer = (value: boolean) => {
+  const onSubmitAnswer = (value: boolean[]) => {
     dispatch(updateAnswerList(value));
     dispatch(updateProgress(examProgress + 1));
   };
