@@ -1,28 +1,35 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { ExamType } from '../../types/exam-type';
-
-type ExamStateValueType = {};
+import { cloneDeep } from 'lodash';
 
 type ExamStateType = {
   value: {
-    progress: number;
+    progressIndex: number;
+    answerList: boolean[];
     exam: ExamType | null;
   };
 };
 
-type SetExamActionType = {
+interface IAction {
   type: string;
-  payload: ExamType;
-};
+}
 
-type UpdateProgressActionType = {
-  type: string;
+interface ISetExamAction extends IAction {
+  payload: ExamType;
+}
+
+interface IUpdateProgressAction extends IAction {
   payload: number;
-};
+}
+
+interface IUpdateAnswerListAction extends IAction {
+  payload: boolean;
+}
 
 const initialState: ExamStateType = {
   value: {
-    progress: 0,
+    progressIndex: 0,
+    answerList: [],
     exam: null,
   },
 };
@@ -31,19 +38,24 @@ const examSlice = createSlice({
   name: 'exam',
   initialState,
   reducers: {
-    setExam: (state: ExamStateType, action: SetExamActionType) => {
+    setExam: (state: ExamStateType, action: ISetExamAction) => {
       state.value.exam = action.payload;
     },
-    updateProgress: (state: ExamStateType, action: UpdateProgressActionType) => {
-      state.value.progress = action.payload;
+    updateProgress: (state: ExamStateType, action: IUpdateProgressAction) => {
+      state.value.progressIndex = action.payload;
+    },
+    updateAnswerList: (state: ExamStateType, action: IUpdateAnswerListAction) => {
+      const tempAnswer = cloneDeep(state.value.answerList);
+      tempAnswer.push(action.payload);
+      state.value.answerList = tempAnswer;
     },
   },
 });
 
-export const { setExam, updateProgress } = examSlice.actions;
+export const { setExam, updateProgress, updateAnswerList } = examSlice.actions;
 export const examReducer = examSlice.reducer;
 
 export type ExamReducerType = {
-  updateExam: (state: ExamStateType, action: SetExamActionType) => void;
-  updateProgress: (state: ExamStateType, action: UpdateProgressActionType) => void;
+  updateExam: (state: ExamStateType, action: ISetExamAction) => void;
+  updateProgress: (state: ExamStateType, action: IUpdateProgressAction) => void;
 };

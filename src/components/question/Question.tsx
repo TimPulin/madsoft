@@ -6,6 +6,7 @@ import type { QuestionType } from '../../types/exam-type';
 
 type QuestionPropsType = {
   question: QuestionType;
+  onSubmit: (value: boolean) => void;
 };
 
 const formInitialState = {
@@ -13,12 +14,12 @@ const formInitialState = {
 };
 
 export default function Question(props: QuestionPropsType) {
-  const { question } = props;
+  const { question, onSubmit } = props;
 
   const formik = useFormik({
     initialValues: formInitialState,
     onSubmit: (values) => {
-      console.log(values);
+      if (values.question) onSubmit(values.question);
     },
   });
 
@@ -35,6 +36,7 @@ export default function Question(props: QuestionPropsType) {
             ))}
           </Space>
         </Radio.Group>
+        {/* TODO блокировка кнопки в ожидании ответа */}
         <Button htmlType="submit" className={formStyles.button}>
           Ответить
         </Button>

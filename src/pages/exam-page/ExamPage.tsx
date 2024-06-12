@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { setExam } from '../../store/slices/exam-slice';
+import { setExam, updateAnswerList } from '../../store/slices/exam-slice';
 
 import { getExam } from '../../server-connect/connections';
 
@@ -18,6 +18,10 @@ export default function ExamPage() {
   const exam = useExam();
   const questionAmount = useQuestionsAmount();
   const examProgress = useExamProgress();
+
+  const onSubmitAnswer = (value: boolean) => {
+    dispatch(updateAnswerList(value));
+  };
 
   async function getExamLocal() {
     const exam = await getExam();
@@ -37,7 +41,9 @@ export default function ExamPage() {
       {exam && (
         <>
           <ProgressBar questionAmount={questionAmount} currentIndex={examProgress} />
-          {exam.questions.length > 0 && <Question question={exam.questions[examProgress]} />}
+          {exam.questions.length > 0 && (
+            <Question question={exam.questions[examProgress]} onSubmit={onSubmitAnswer} />
+          )}
         </>
       )}
     </main>

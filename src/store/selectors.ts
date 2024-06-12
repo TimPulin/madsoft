@@ -6,7 +6,7 @@ function useExam() {
 }
 
 function useExamProgress() {
-  return useSelector((store: RootStateType) => store.exam.value.progress);
+  return useSelector((store: RootStateType) => store.exam.value.progressIndex);
 }
 
 function useQuestionsAmount() {
