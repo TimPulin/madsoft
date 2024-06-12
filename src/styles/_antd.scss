@@ -1,0 +1,23 @@
+// radio
+:where(.css-dev-only-do-not-override-3rel02).ant-radio-wrapper .ant-radio-inner {
+  border-width: 2px;
+}
+
+:where(.css-dev-only-do-not-override-3rel02).ant-radio-wrapper .ant-radio-checked .ant-radio-inner {
+  background-color: $color-primary;
+  border-color: $color-primary;
+}
+
+:where(.css-dev-only-do-not-override-3rel02).ant-radio-wrapper .ant-radio-inner::after {
+  content: none;
+}
+
+:where(.css-dev-only-do-not-override-3rel02).ant-radio-wrapper:hover .ant-radio-inner {
+  border-color: $color-primary;
+}
+
+:where(.css-dev-only-do-not-override-3rel02).ant-btn-default:not(:disabled):not(.ant-btn-disabled):hover {
+  //   background-color: $color-primary;
+  color: $color-primary;
+  border-color: $color-primary;
+}

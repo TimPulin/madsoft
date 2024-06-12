@@ -1,0 +1,24 @@
+.progress {
+  display: flex;
+  justify-content: stretch;
+  align-items: center;
+  column-gap: 10px;
+  margin-bottom: $gap-basic;
+}
+
+.item {
+  width: 100%;
+  height: 10px;
+}
+
+.itemPass {
+  background-color: #000;
+}
+
+.itemCurrent {
+  background-color: $color-primary;
+}
+
+.itemUnlock {
+  background-color: $color-grey;
+}
