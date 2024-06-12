@@ -1,4 +1,4 @@
-import { ExamType } from '../types/exam-type';
+import { ExamType, QuestionMode } from '../types/exam-type';
 
 const exam_1: ExamType = {
   name: 'Экзамен-1',
@@ -7,7 +7,7 @@ const exam_1: ExamType = {
   questions: [
     {
       title: 'Вопрос-1',
-      multiple: false,
+      questionMode: QuestionMode.Radio,
       options: [
         {
           text: 'вариант-1',
@@ -25,7 +25,7 @@ const exam_1: ExamType = {
     },
     {
       title: 'Вопрос-2',
-      multiple: false,
+      questionMode: QuestionMode.Checkbox,
       options: [
         {
           text: 'вариант-1',
@@ -47,7 +47,7 @@ const exam_1: ExamType = {
     },
     {
       title: 'Вопрос-3',
-      multiple: false,
+      questionMode: QuestionMode.Checkbox,
       options: [
         {
           text: 'вариант-1',

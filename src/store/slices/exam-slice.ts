@@ -5,7 +5,7 @@ import { cloneDeep } from 'lodash';
 type ExamStateType = {
   value: {
     progressIndex: number;
-    answerList: boolean[];
+    answerList: boolean[][];
     exam: ExamType | null;
   };
 };
@@ -23,7 +23,7 @@ interface IUpdateProgressAction extends IAction {
 }
 
 interface IUpdateAnswerListAction extends IAction {
-  payload: boolean;
+  payload: boolean[];
 }
 
 const initialState: ExamStateType = {
@@ -48,6 +48,7 @@ const examSlice = createSlice({
       const tempAnswer = cloneDeep(state.value.answerList);
       tempAnswer.push(action.payload);
       state.value.answerList = tempAnswer;
+      console.log(state.value.answerList);
     },
   },
 });

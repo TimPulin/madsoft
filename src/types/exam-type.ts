@@ -1,10 +1,15 @@
+enum QuestionMode {
+  Radio,
+  Checkbox,
+}
+
 type OptionType = {
   text: string;
   isCorrect: boolean;
 };
 
 type QuestionType = {
-  multiple: boolean;
+  questionMode: QuestionMode;
   title: string;
   options: OptionType[];
 };
@@ -16,4 +21,5 @@ type ExamType = {
   questions: QuestionType[];
 };
 
+export { QuestionMode };
 export type { ExamType, QuestionType, OptionType };
