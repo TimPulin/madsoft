@@ -10,7 +10,8 @@ import {
 } from '../../store/slices/exam-slice';
 import { useExam, useExamProgressIndex, useQuestionsAmount } from '../../store/selectors';
 
-import { getExam } from '../../server-connect/connections';
+import { getExam } from '../../connections/server-connection';
+import { setProgressInLocalStorage } from '../../connections/local-storage-connection';
 
 import ProgressBar from '../../components/progress-bar/ProgressBar';
 import Question from '../../components/question/Question';
@@ -23,14 +24,14 @@ export default function ExamPage() {
   const dispatch = useDispatch();
   const exam = useExam();
   const questionAmount = useQuestionsAmount();
-  const examProgress = useExamProgressIndex();
+  const examProgressIndex = useExamProgressIndex();
 
   const [isTimeOver, setIsTimeOver] = useState(false);
 
   const onSubmitAnswer = (value: boolean[]) => {
     dispatch(updateAnswerList(value));
-    if (examProgress < questionAmount - 1) {
-      dispatch(updateProgress(examProgress + 1));
+    if (examProgressIndex < questionAmount - 1) {
+      dispatch(updateProgress(examProgressIndex + 1));
     } else {
       dispatch(setEndExamDate(new Date().getTime()));
     }
@@ -49,8 +50,20 @@ export default function ExamPage() {
     getExamLocal();
   }, []);
 
+  function handleCloseTab() {
+    window.onbeforeunload = () => {
+      const test = {
+        progressIndex: examProgressIndex,
+      };
+      return 'Вы уверены, что хотите прервать тестирование?';
+    };
+  }
+
   useEffect(() => {
-    if (exam) startExam();
+    if (exam) {
+      handleCloseTab();
+      startExam();
+    }
   }, [exam]);
 
   return (
@@ -67,9 +80,9 @@ export default function ExamPage() {
       </div>
       {exam && (
         <>
-          <ProgressBar questionAmount={questionAmount} currentIndex={examProgress} />
+          <ProgressBar questionAmount={questionAmount} currentIndex={examProgressIndex} />
           {exam.questions.length > 0 && (
-            <Question question={exam.questions[examProgress]} onSubmit={onSubmitAnswer} />
+            <Question question={exam.questions[examProgressIndex]} onSubmit={onSubmitAnswer} />
           )}
         </>
       )}
