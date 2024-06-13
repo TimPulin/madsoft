@@ -37,9 +37,10 @@ export default function ExamPage() {
 
   const [isTimeOver, setIsTimeOver] = useState(false);
   const [isTimerStop, setIsTimerStop] = useState(true);
-  const timeLeftRef = useRef(0);
 
-  const windowBeforeUnloadRef = useRef(false);
+  const timeLeftRef = useRef(0);
+  const examProgressIndexRef = useRef(0);
+  const isExamFinishedRef = useRef(0);
 
   const onSubmitAnswer = (value: boolean[]) => {
     dispatch(updateAnswerList(value));
@@ -47,15 +48,18 @@ export default function ExamPage() {
       dispatch(updateProgress(examProgressIndex + 1));
     } else {
       setIsTimerStop(true);
+      stopExam();
     }
   };
 
   function startExam() {
     setIsTimerStop(false);
+    isExamFinishedRef.current = 0;
   }
 
   function stopExam() {
-    // if (exam) deleteExamSessionFromLocalStorage(String(exam.id));
+    isExamFinishedRef.current = 1;
+    if (exam) deleteExamSessionFromLocalStorage(String(exam.id));
     // TODO
   }
 
@@ -68,44 +72,50 @@ export default function ExamPage() {
       const exam = await getExam();
       const prevExamSession = getExamSessionFromLocalStorage(String(exam.id));
       if (prevExamSession) {
-        dispatch(setExam({ ...exam, ...JSON.parse(prevExamSession) }));
-      } else {
-        dispatch(setExam(exam));
+        dispatch(updateTimeLeft(prevExamSession.timeLeft));
+        dispatch(updateProgress(prevExamSession.progressIndex));
       }
+      dispatch(setExam(exam));
     } catch (error) {
       // TODO
       console.log(error);
     }
   }
 
+  function handleCloseTab() {
+    if (isExamFinishedRef.current === 0) {
+      const obj = {
+        progressIndex: examProgressIndexRef.current,
+        timeLeft: timeLeftRef.current,
+      };
+      if (exam) setExamSessionInLocalStorage(String(exam.id), JSON.stringify(obj));
+      return false;
+    }
+    return true;
+  }
+
   useEffect(() => {
-    stopExam();
+    if (isTimeOver) stopExam();
   }, [isTimeOver]);
+
+  useEffect(() => {
+    examProgressIndexRef.current = examProgressIndex;
+  }, [examProgressIndex]);
+
+  useEffect(() => {
+    if (exam) {
+      window.onbeforeunload = handleCloseTab;
+      startExam();
+    }
+
+    return () => {
+      window.onbeforeunload = null;
+    };
+  }, [exam]);
 
   useEffect(() => {
     fetchExam();
   }, []);
-
-  function handleCloseTab() {
-    const obj = {
-      progressIndex: examProgressIndex,
-      timeLeft: timeLeftRef.current,
-    };
-    console.log(obj);
-
-    if (exam) setExamSessionInLocalStorage(String(exam.id), JSON.stringify(obj));
-  }
-
-  useEffect(() => {
-    if (exam) {
-      window.onbeforeunload = () => {
-        windowBeforeUnloadRef.current = true;
-        handleCloseTab();
-        return 'Вы уверены, что хотите прервать тестирование?';
-      };
-      startExam();
-    }
-  }, [exam]);
 
   return (
     <main className={mainStyles.main}>

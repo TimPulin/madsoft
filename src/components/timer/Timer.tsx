@@ -76,7 +76,7 @@ export default function Timer(props: TimerPropsType) {
       setIsTimeOver(true);
       stopTimer();
     } else {
-      setIsTimeOver(false);
+      //   setIsTimeOver(false);
       runTimer();
     }
   }, [timeLeft]);
