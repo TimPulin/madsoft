@@ -1,7 +1,14 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { setExam, updateAnswerList, updateProgress } from '../../store/slices/exam-slice';
+import {
+  setEndExamDate,
+  setExam,
+  setStartExamDate,
+  updateAnswerList,
+  updateProgress,
+} from '../../store/slices/exam-slice';
+import { useExam, useExamProgressIndex, useQuestionsAmount } from '../../store/selectors';
 
 import { getExam } from '../../server-connect/connections';
 
@@ -11,7 +18,6 @@ import Timer from '../../components/timer/Timer';
 
 import mainStyles from '../../styles/modules/main.module.scss';
 import pageStyles from './exam-page.module.scss';
-import { useExam, useExamProgressIndex, useQuestionsAmount } from '../../store/selectors';
 
 export default function ExamPage() {
   const dispatch = useDispatch();
@@ -19,10 +25,20 @@ export default function ExamPage() {
   const questionAmount = useQuestionsAmount();
   const examProgress = useExamProgressIndex();
 
+  const [isTimeOver, setIsTimeOver] = useState(false);
+
   const onSubmitAnswer = (value: boolean[]) => {
     dispatch(updateAnswerList(value));
-    if (examProgress < questionAmount - 1) dispatch(updateProgress(examProgress + 1));
+    if (examProgress < questionAmount - 1) {
+      dispatch(updateProgress(examProgress + 1));
+    } else {
+      dispatch(setEndExamDate(new Date().getTime()));
+    }
   };
+
+  function startExam() {
+    dispatch(setStartExamDate(new Date().getTime()));
+  }
 
   async function getExamLocal() {
     const exam = await getExam();
@@ -33,11 +49,21 @@ export default function ExamPage() {
     getExamLocal();
   }, []);
 
+  useEffect(() => {
+    if (exam) startExam();
+  }, [exam]);
+
   return (
     <main className={mainStyles.main}>
       <div className={pageStyles.wrapTitle}>
         <h1>Тестирование</h1>
-        {exam && <Timer />}
+        {exam?.timer && (
+          <Timer
+            duration={exam.examMaxDuration}
+            isTimeOver={isTimeOver}
+            setIsTimeOver={setIsTimeOver}
+          />
+        )}
       </div>
       {exam && (
         <>

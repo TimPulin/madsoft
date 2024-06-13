@@ -2,8 +2,8 @@ import { ExamType, QuestionMode } from '../types/exam-type';
 
 const exam_1: ExamType = {
   name: 'Экзамен-1',
-  timer: false,
-  examMaxDuration: 0,
+  timer: true,
+  examMaxDuration: 6000,
   questions: [
     {
       title: 'Вопрос-1',

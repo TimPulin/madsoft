@@ -6,8 +6,8 @@ type ExamStateType = {
   value: {
     progressIndex: number;
     answerList: boolean[][];
-    startExamDate: Date | null;
-    endExamDate: Date | null;
+    startExamDate: number | null;
+    endExamDate: number | null;
     exam: ExamType | null;
   };
 };
@@ -29,7 +29,7 @@ interface IUpdateAnswerListAction extends IAction {
 }
 
 interface ISetExamDate extends IAction {
-  payload: Date;
+  payload: number;
 }
 
 const initialState: ExamStateType = {
