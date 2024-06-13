@@ -1,4 +1,4 @@
-import { Formik, useFormik } from 'formik';
+import { useFormik } from 'formik';
 import { Button, Checkbox, Radio, RadioChangeEvent, Space } from 'antd';
 import formStyles from '../../styles/modules/form.module.scss';
 

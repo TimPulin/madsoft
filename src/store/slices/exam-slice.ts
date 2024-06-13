@@ -6,6 +6,8 @@ type ExamStateType = {
   value: {
     progressIndex: number;
     answerList: boolean[][];
+    startExamDate: number | null;
+    endExamDate: number | null;
     exam: ExamType | null;
   };
 };
@@ -26,8 +28,14 @@ interface IUpdateAnswerListAction extends IAction {
   payload: boolean[];
 }
 
+interface ISetExamDate extends IAction {
+  payload: number;
+}
+
 const initialState: ExamStateType = {
   value: {
+    startExamDate: null,
+    endExamDate: null,
     progressIndex: 0,
     answerList: [],
     exam: null,
@@ -49,10 +57,17 @@ const examSlice = createSlice({
       tempAnswer.push(action.payload);
       state.value.answerList = tempAnswer;
     },
+    setStartExamDate: (state: ExamStateType, action: ISetExamDate) => {
+      state.value.startExamDate = action.payload;
+    },
+    setEndExamDate: (state: ExamStateType, action: ISetExamDate) => {
+      state.value.endExamDate = action.payload;
+    },
   },
 });
 
-export const { setExam, updateProgress, updateAnswerList } = examSlice.actions;
+export const { setExam, updateProgress, updateAnswerList, setStartExamDate, setEndExamDate } =
+  examSlice.actions;
 export const examReducer = examSlice.reducer;
 
 export type ExamReducerType = {
