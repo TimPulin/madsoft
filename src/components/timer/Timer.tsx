@@ -5,6 +5,8 @@ type TimerPropsType = {
   duration: number;
   isTimeOver: boolean;
   setIsTimeOver: React.Dispatch<React.SetStateAction<boolean>>;
+  isTimerStop: boolean;
+  setIsTimerStop: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const ONE_HOUR = 3600000;

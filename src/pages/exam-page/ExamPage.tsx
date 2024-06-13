@@ -1,13 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import {
-  setEndExamDate,
-  setExam,
-  setStartExamDate,
-  updateAnswerList,
-  updateProgress,
-} from '../../store/slices/exam-slice';
+import { setExam, updateAnswerList, updateProgress } from '../../store/slices/exam-slice';
 import { useExam, useExamProgressIndex, useQuestionsAmount } from '../../store/selectors';
 
 import { getExam } from '../../connections/server-connection';
@@ -27,18 +21,19 @@ export default function ExamPage() {
   const examProgressIndex = useExamProgressIndex();
 
   const [isTimeOver, setIsTimeOver] = useState(false);
+  const [isTimerStop, setIsTimerStop] = useState(false);
 
   const onSubmitAnswer = (value: boolean[]) => {
     dispatch(updateAnswerList(value));
     if (examProgressIndex < questionAmount - 1) {
       dispatch(updateProgress(examProgressIndex + 1));
     } else {
-      dispatch(setEndExamDate(new Date().getTime()));
+      // TODO
     }
   };
 
   function startExam() {
-    dispatch(setStartExamDate(new Date().getTime()));
+    // TODO
   }
 
   async function getExamLocal() {
@@ -75,6 +70,8 @@ export default function ExamPage() {
             duration={exam.examMaxDuration}
             isTimeOver={isTimeOver}
             setIsTimeOver={setIsTimeOver}
+            isTimerStop={isTimerStop}
+            setIsTimerStop={setIsTimerStop}
           />
         )}
       </div>
