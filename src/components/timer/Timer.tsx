@@ -76,6 +76,7 @@ export default function Timer(props: TimerPropsType) {
       setIsTimeOver(true);
       stopTimer();
     } else {
+      // TODO удалить
       //   setIsTimeOver(false);
       runTimer();
     }

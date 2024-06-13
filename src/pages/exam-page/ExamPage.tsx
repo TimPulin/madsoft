@@ -60,6 +60,7 @@ export default function ExamPage() {
   function stopExam() {
     isExamFinishedRef.current = 1;
     if (exam) deleteExamSessionFromLocalStorage(String(exam.id));
+    window.onbeforeunload = null;
     // TODO
   }
 
@@ -95,7 +96,7 @@ export default function ExamPage() {
   }
 
   useEffect(() => {
-    if (isTimeOver) stopExam();
+    // if (isTimeOver) stopExam();
   }, [isTimeOver]);
 
   useEffect(() => {
