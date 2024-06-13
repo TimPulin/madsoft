@@ -1,9 +1,17 @@
-function setProgressInLocalStorage(key: string, value: string) {
+function setExamSessionInLocalStorage(key: string, value: string) {
   localStorage.setItem(key, value);
 }
 
-function getProgressFromLocalStorage(key: string) {
-  localStorage.getItem(key);
+function getExamSessionFromLocalStorage(key: string) {
+  return localStorage.getItem(key);
 }
 
-export { setProgressInLocalStorage, getProgressFromLocalStorage };
+function deleteExamSessionFromLocalStorage(key: string) {
+  localStorage.removeItem(key);
+}
+
+export {
+  setExamSessionInLocalStorage,
+  getExamSessionFromLocalStorage,
+  deleteExamSessionFromLocalStorage,
+};

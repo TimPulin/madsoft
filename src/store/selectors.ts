@@ -15,4 +15,8 @@ function useQuestionsAmount() {
   });
 }
 
-export { useExam, useExamProgressIndex, useQuestionsAmount };
+function useTimeLeft() {
+  return useSelector((store: RootStateType) => store.exam.value.timeLeft);
+}
+
+export { useExam, useExamProgressIndex, useQuestionsAmount, useTimeLeft };

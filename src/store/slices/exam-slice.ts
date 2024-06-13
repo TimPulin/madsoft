@@ -5,7 +5,7 @@ import { cloneDeep } from 'lodash';
 type ExamStateType = {
   value: {
     progressIndex: number;
-    currentDuration: number | null;
+    timeLeft: number | null;
     answerList: boolean[][];
     exam: ExamType | null;
   };
@@ -27,14 +27,14 @@ interface IUpdateAnswerListAction extends IAction {
   payload: boolean[];
 }
 
-interface ISetExamDate extends IAction {
+interface IUpdateTimeLeft extends IAction {
   payload: number;
 }
 
 const initialState: ExamStateType = {
   value: {
     progressIndex: 0,
-    currentDuration: null,
+    timeLeft: null,
     answerList: [],
     exam: null,
   },
@@ -47,21 +47,28 @@ const examSlice = createSlice({
     setExam: (state: ExamStateType, action: ISetExamAction) => {
       state.value.exam = action.payload;
     },
+
     updateProgress: (state: ExamStateType, action: IUpdateProgressAction) => {
       state.value.progressIndex = action.payload;
     },
+
     updateAnswerList: (state: ExamStateType, action: IUpdateAnswerListAction) => {
       const tempAnswer = cloneDeep(state.value.answerList);
       tempAnswer.push(action.payload);
       state.value.answerList = tempAnswer;
     },
+
+    updateTimeLeft: (state: ExamStateType, action: IUpdateTimeLeft) => {
+      state.value.timeLeft = action.payload;
+    },
   },
 });
 
-export const { setExam, updateProgress, updateAnswerList } = examSlice.actions;
+export const { setExam, updateProgress, updateAnswerList, updateTimeLeft } = examSlice.actions;
 export const examReducer = examSlice.reducer;
 
 export type ExamReducerType = {
   updateExam: (state: ExamStateType, action: ISetExamAction) => void;
   updateProgress: (state: ExamStateType, action: IUpdateProgressAction) => void;
+  updateTimeLeft: (state: ExamStateType, action: IUpdateTimeLeft) => void;
 };

@@ -3,10 +3,9 @@ import styles from './timer.module.scss';
 
 type TimerPropsType = {
   duration: number;
-  isTimeOver: boolean;
+  updateTimeLeftExternal: (value: number) => void;
   setIsTimeOver: React.Dispatch<React.SetStateAction<boolean>>;
   isTimerStop: boolean;
-  setIsTimerStop: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const ONE_HOUR = 3600000;
@@ -20,8 +19,8 @@ const initialFormatedTime = {
 };
 
 export default function Timer(props: TimerPropsType) {
-  const { duration, isTimeOver, setIsTimeOver } = props;
-  const [time, setTime] = useState<number>(0);
+  const { duration, updateTimeLeftExternal, setIsTimeOver, isTimerStop } = props;
+  const [timeLeft, setTimeLeft] = useState<number>(0);
   const [formatedTime, setFormatedTime] = useState(initialFormatedTime);
   const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
@@ -29,6 +28,7 @@ export default function Timer(props: TimerPropsType) {
     const hours = Math.floor(time / ONE_HOUR);
     const minutes = Math.floor((time % ONE_HOUR) / ONE_MINUTE);
     const seconds = Math.floor((time % ONE_MINUTE) / ONE_SECOND);
+
     setFormatedTime({
       hours: String(hours).padStart(2, '0'),
       minutes: String(minutes).padStart(2, '0'),
@@ -36,42 +36,50 @@ export default function Timer(props: TimerPropsType) {
     });
   }
 
-  function setNewTime(prevTime: number) {
+  function calcNewTime(prevTime: number) {
     const newTime = prevTime - ONE_SECOND;
     return newTime <= 0 ? 0 : newTime;
   }
 
   function stopTimer() {
     clearInterval(timerRef.current);
+    timerRef.current = undefined;
   }
 
   function runTimer() {
     stopTimer();
     timerRef.current = setInterval(() => {
-      setTime((prevTime) => setNewTime(prevTime));
+      setTimeLeft((prevTime) => {
+        const newTime = calcNewTime(prevTime);
+        updateTimeLeftExternal(newTime);
+        return newTime;
+      });
     }, ONE_SECOND);
   }
 
   useEffect(() => {
-    if (isTimeOver) {
+    if (isTimerStop) {
       stopTimer();
     } else {
-      setTime(duration);
+      setTimeLeft(duration);
       runTimer();
     }
+
     return () => {
       stopTimer();
     };
-  }, [duration, isTimeOver]);
+  }, [duration, isTimerStop]);
 
   useEffect(() => {
-    formatTime(time);
-    if (time === 0) {
+    formatTime(timeLeft);
+    if (timeLeft === 0) {
       setIsTimeOver(true);
+      stopTimer();
     } else {
       setIsTimeOver(false);
+      runTimer();
     }
-  }, [time]);
+  }, [timeLeft]);
 
   return (
     <div className={styles.timer}>
