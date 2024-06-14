@@ -35,12 +35,12 @@ export default function ExamPage() {
   const examProgressIndex = useExamProgressIndex();
   const timeLeftState = useTimeLeft();
 
-  const [isTimeOver, setIsTimeOver] = useState(false);
+  const isTimeOverRef = useRef(0);
+  //   const [isTimeOver, setIsTimeOver] = useState(false);
   const [isTimerStop, setIsTimerStop] = useState(true);
 
   const timeLeftRef = useRef(0);
   const examProgressIndexRef = useRef(0);
-  const isExamFinishedRef = useRef(0);
 
   const onSubmitAnswer = (value: boolean[]) => {
     dispatch(updateAnswerList(value));
@@ -54,18 +54,20 @@ export default function ExamPage() {
 
   function startExam() {
     setIsTimerStop(false);
-    isExamFinishedRef.current = 0;
   }
 
   function stopExam() {
-    isExamFinishedRef.current = 1;
     if (exam) deleteExamSessionFromLocalStorage(String(exam.id));
     window.onbeforeunload = null;
-    // TODO
   }
 
   const updateTimeLeftLocal = (value: number) => {
     timeLeftRef.current = value;
+  };
+
+  const updateIsTimeOver = (value: number) => {
+    isTimeOverRef.current = value;
+    if (isTimeOverRef.current) stopExam();
   };
 
   async function fetchExam() {
@@ -84,20 +86,13 @@ export default function ExamPage() {
   }
 
   function handleCloseTab() {
-    if (isExamFinishedRef.current === 0) {
-      const obj = {
-        progressIndex: examProgressIndexRef.current,
-        timeLeft: timeLeftRef.current,
-      };
-      if (exam) setExamSessionInLocalStorage(String(exam.id), JSON.stringify(obj));
-      return false;
-    }
-    return true;
+    const obj = {
+      progressIndex: examProgressIndexRef.current,
+      timeLeft: timeLeftRef.current,
+    };
+    if (exam) setExamSessionInLocalStorage(String(exam.id), JSON.stringify(obj));
+    return false;
   }
-
-  useEffect(() => {
-    // if (isTimeOver) stopExam();
-  }, [isTimeOver]);
 
   useEffect(() => {
     examProgressIndexRef.current = examProgressIndex;
@@ -126,7 +121,7 @@ export default function ExamPage() {
           <Timer
             duration={timeLeftState ? timeLeftState : exam.examMaxDuration}
             updateTimeLeftExternal={updateTimeLeftLocal}
-            setIsTimeOver={setIsTimeOver}
+            updateIsTimeOver={updateIsTimeOver}
             isTimerStop={isTimerStop}
           />
         )}

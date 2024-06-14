@@ -4,7 +4,7 @@ import styles from './timer.module.scss';
 type TimerPropsType = {
   duration: number;
   updateTimeLeftExternal: (value: number) => void;
-  setIsTimeOver: React.Dispatch<React.SetStateAction<boolean>>;
+  updateIsTimeOver: (value: number) => void;
   isTimerStop: boolean;
 };
 
@@ -19,7 +19,7 @@ const initialFormatedTime = {
 };
 
 export default function Timer(props: TimerPropsType) {
-  const { duration, updateTimeLeftExternal, setIsTimeOver, isTimerStop } = props;
+  const { duration, updateTimeLeftExternal, updateIsTimeOver, isTimerStop } = props;
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const [formatedTime, setFormatedTime] = useState(initialFormatedTime);
   const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);
@@ -52,6 +52,7 @@ export default function Timer(props: TimerPropsType) {
       setTimeLeft((prevTime) => {
         const newTime = calcNewTime(prevTime);
         updateTimeLeftExternal(newTime);
+        if (!newTime) updateIsTimeOver(1);
         return newTime;
       });
     }, ONE_SECOND);
@@ -73,11 +74,8 @@ export default function Timer(props: TimerPropsType) {
   useEffect(() => {
     formatTime(timeLeft);
     if (timeLeft === 0) {
-      setIsTimeOver(true);
       stopTimer();
     } else {
-      // TODO удалить
-      //   setIsTimeOver(false);
       runTimer();
     }
   }, [timeLeft]);
