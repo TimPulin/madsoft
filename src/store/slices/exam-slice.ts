@@ -5,9 +5,8 @@ import { cloneDeep } from 'lodash';
 type ExamStateType = {
   value: {
     progressIndex: number;
+    timeLeft: number | null;
     answerList: boolean[][];
-    startExamDate: number | null;
-    endExamDate: number | null;
     exam: ExamType | null;
   };
 };
@@ -28,15 +27,14 @@ interface IUpdateAnswerListAction extends IAction {
   payload: boolean[];
 }
 
-interface ISetExamDate extends IAction {
+interface IUpdateTimeLeft extends IAction {
   payload: number;
 }
 
 const initialState: ExamStateType = {
   value: {
-    startExamDate: null,
-    endExamDate: null,
     progressIndex: 0,
+    timeLeft: null,
     answerList: [],
     exam: null,
   },
@@ -49,28 +47,28 @@ const examSlice = createSlice({
     setExam: (state: ExamStateType, action: ISetExamAction) => {
       state.value.exam = action.payload;
     },
+
     updateProgress: (state: ExamStateType, action: IUpdateProgressAction) => {
       state.value.progressIndex = action.payload;
     },
+
     updateAnswerList: (state: ExamStateType, action: IUpdateAnswerListAction) => {
       const tempAnswer = cloneDeep(state.value.answerList);
       tempAnswer.push(action.payload);
       state.value.answerList = tempAnswer;
     },
-    setStartExamDate: (state: ExamStateType, action: ISetExamDate) => {
-      state.value.startExamDate = action.payload;
-    },
-    setEndExamDate: (state: ExamStateType, action: ISetExamDate) => {
-      state.value.endExamDate = action.payload;
+
+    updateTimeLeft: (state: ExamStateType, action: IUpdateTimeLeft) => {
+      state.value.timeLeft = action.payload;
     },
   },
 });
 
-export const { setExam, updateProgress, updateAnswerList, setStartExamDate, setEndExamDate } =
-  examSlice.actions;
+export const { setExam, updateProgress, updateAnswerList, updateTimeLeft } = examSlice.actions;
 export const examReducer = examSlice.reducer;
 
 export type ExamReducerType = {
   updateExam: (state: ExamStateType, action: ISetExamAction) => void;
   updateProgress: (state: ExamStateType, action: IUpdateProgressAction) => void;
+  updateTimeLeft: (state: ExamStateType, action: IUpdateTimeLeft) => void;
 };

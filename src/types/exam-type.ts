@@ -15,6 +15,7 @@ type QuestionType = {
 };
 
 type ExamType = {
+  id: number;
   name: string;
   timer: boolean;
   examMaxDuration: number;
